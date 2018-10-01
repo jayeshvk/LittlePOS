@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradientreverse"
+    android:orientation="vertical"
+    android:theme="@style/Theme.AppCompat.NoActionBar"
+    tools:context=".ReportDate">
+    <LinearLayout
+        android:id="@+id/header"
+        style="@style/DialogTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/DialogTitleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Customer Sales Summary" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/h1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shadow"
+        android:orientation="horizontal"
+        android:layout_below="@+id/header">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_date_range_white_24px" />
+
+        <TextView
+            android:id="@+id/fromDate"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="From Date"
+            android:textColor="#ffffff"
+            android:textColorHint="#bbbbbb"
+            android:textSize="15sp" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_date_range_white_24px" />
+
+        <TextView
+            android:id="@+id/toDate"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="To Date"
+            android:textColor="#ffffff"
+            android:textColorHint="#bbbbbb"
+            android:textSize="15sp" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/headerColumn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shadow"
+        android:orientation="horizontal"
+        android:padding="@dimen/margin5dp"
+        android:layout_below="@+id/h1"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <TextView
+            android:id="@+id/textView17"
+            style="@style/ReportText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:gravity="end"
+            android:text="Customer"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/textView18"
+            style="@style/ReportText"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="Sales"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/textView19"
+            style="@style/ReportText"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="Paid"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/textView20"
+            style="@style/ReportText"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="Σ All Due"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/footer"
+        android:layout_below="@+id/headerColumn"
+        android:layout_marginLeft="@dimen/margin5dp"
+        android:layout_marginRight="@dimen/margin5dp"
+        android:orientation="vertical">
+
+        <ListView
+            android:id="@+id/reportsCutomerSummaryList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/shadow" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/shadow"
+        android:orientation="horizontal"
+        android:padding="@dimen/margin5dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:gravity="end"
+            android:text="Grand Total"
+            android:textColor="@color/White"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/rcsSales"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="0.00"
+            android:textColor="@color/White"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/rcsPaid"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="0.00"
+            android:textColor="@color/White"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/rcsDue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="0.00"
+            android:textColor="@color/White"
+            android:textSize="12sp" />
+    </LinearLayout>
+</RelativeLayout>

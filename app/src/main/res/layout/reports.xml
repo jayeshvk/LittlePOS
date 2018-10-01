@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp">
+
+    <Button
+        style="@style/mainbutton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/mainbuttonshape"
+        android:onClick="reportItem"
+        android:text="Sales By Item Detail" />
+
+    <Button
+        android:id="@+id/itemTotal"
+        style="@style/mainbutton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/mainbuttonshape"
+        android:onClick="itemTotal"
+        android:text="Item Total" />
+
+    <Button
+        android:id="@+id/button9"
+        style="@style/mainbutton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/mainbuttonshape"
+        android:onClick="reportDate"
+        android:text="Sales by Date" />
+
+    <Button
+        style="@style/mainbutton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/mainbuttonshape"
+        android:onClick="costReportDate"
+        android:text="Cost by Date" />
+
+    <Button
+        style="@style/mainbutton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/mainbuttonshape"
+        android:onClick="customerSalesSummary"
+        android:text="Customer Sales Summary" />
+
+    <Button
+        style="@style/mainbutton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/mainbuttonshape"
+        android:onClick="totalBusiness"
+        android:text="Total Business" />
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        ads:adSize="LARGE_BANNER"
+        ads:adUnitId="@string/banner_ad_unit_report" />
+
+</LinearLayout>

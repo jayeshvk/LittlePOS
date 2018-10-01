@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Amber900"
+    android:paddingBottom="2dp">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@color/Yellow600">
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Date"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:textColor="@color/Black"
+        android:id="@+id/textViewDate" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Total"
+        android:layout_weight="1"
+        android:gravity="end"
+        android:textSize="16sp"
+        android:textColor="@color/Black"
+        android:id="@+id/textViewTotal" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Payments"
+        android:layout_weight="1"
+        android:gravity="end"
+        android:textSize="16sp"
+        android:textColor="@color/Black"
+        android:id="@+id/textViewPayments"/>
+</LinearLayout>
+
+</LinearLayout>

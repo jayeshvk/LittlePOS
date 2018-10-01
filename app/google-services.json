@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "787098930174",
+    "firebase_url": "https://strategic-lens-121520.firebaseio.com",
+    "project_id": "strategic-lens-121520",
+    "storage_bucket": "strategic-lens-121520.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:787098930174:android:dbe451acbdf3a736",
+        "android_client_info": {
+          "package_name": "com.evinyas.jkotekar.littlepos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "787098930174-1nokbblg26b7rsif9jj59dr5nd0rvffd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCjEnddFNw_sbOdJriS6MpvJZcbrWfGZXI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "787098930174-1nokbblg26b7rsif9jj59dr5nd0rvffd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

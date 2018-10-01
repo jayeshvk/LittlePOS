@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient"
+    android:orientation="vertical"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    tools:context="com.evinyas.jkotekar.littlepos.MainActivity"
+    tools:showIn="@layout/activity_main"
+    android:paddingBottom="10dp"
+    android:gravity="center">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="89dp"
+        android:layout_height="143dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/littlepos" />
+
+    <Button
+        android:id="@+id/button3"
+        style="@style/mainbutton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/mainbuttonshape"
+        android:onClick="sales"
+        android:text="SALES ENTRY" />
+
+    <Button
+        android:id="@+id/costEntry"
+        style="@style/mainbutton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/mainbuttonshape"
+        android:onClick="cost"
+        android:text="COST ENTRY" />
+
+    <Button
+        style="@style/mainbutton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/mainbuttonshape"
+        android:onClick="masterdata"
+        android:text="Master DATA" />
+
+    <Button
+        style="@style/mainbutton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/mainbuttonshape"
+        android:onClick="reports"
+        android:text="REPORTS" />
+
+    <Button
+        style="@style/mainbutton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/mainbuttonshape"
+        android:onClick="admin"
+        android:text="ADMIN" />
+
+    <com.google.android.gms.ads.AdView
+        android:paddingTop="10dp"
+        android:id="@+id/adView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        ads:adSize="LARGE_BANNER"
+        ads:adUnitId="@string/banner_ad_unit_id" />
+</LinearLayout>

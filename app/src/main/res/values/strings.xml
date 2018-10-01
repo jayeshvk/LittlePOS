@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">LittlePOS</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="customer_product">Select an Entry</string>
+
+    <string name="title_activity_sales">Sales</string>
+    <string name="title_activity_masterdata">Master Data</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- AdMob ad unit IDs -->
+    <string name="banner_ad_unit_id">ca-app-pub-6661943229726422/1436902393</string>
+    <string name="banner_ad_unit_report">ca-app-pub-6661943229726422/1525483998</string>
+
+</resources>

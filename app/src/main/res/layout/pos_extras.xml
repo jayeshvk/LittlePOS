@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView25"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Payments" />
+
+        <EditText
+            android:id="@+id/pos_payments1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="00.00"
+            android:maxLines="1"
+            android:nextFocusDown="@+id/customerName" />
+
+        <TextView
+            android:id="@+id/textView27"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Surcharges" />
+
+        <EditText
+            android:id="@+id/pos_surcharges1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="00.00"
+            android:inputType="phone" />
+
+        <TextView
+            android:id="@+id/textView29"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tax Percentage" />
+
+        <EditText
+            android:id="@+id/pos_tax1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="0.0"
+            android:inputType="phone" />
+
+        <ImageButton
+            android:id="@+id/pos_extras_save"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="savedata"
+            app:srcCompat="@drawable/ic_cancel_black_24dp" />
+
+        <TextView
+            android:id="@+id/textView28"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Comments" />
+
+        <EditText
+            android:id="@+id/pos_comments1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Type in Comment"
+            android:inputType="phone" />
+
+    </LinearLayout>
+
+</LinearLayout>

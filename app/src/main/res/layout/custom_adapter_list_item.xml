@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/liSlno"
+            android:visibility="gone"/>
+
+        <TextView
+            style="@style/ReportText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.9"
+            android:text="Date"
+            android:id="@+id/liDate"
+            android:textSize="12sp"/>
+
+        <TextView
+            style="@style/ReportText"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.70"
+            android:text="Product"
+            android:gravity="end"
+            android:id="@+id/liProduct"
+            android:textSize="12sp"/>
+
+        <TextView
+            style="@style/ReportText"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:text="Qty"
+            android:id="@+id/liQty"
+            android:textSize="12sp"/>
+
+        <TextView
+            style="@style/ReportText"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.90"
+            android:text="₹"
+            android:gravity="end"
+            android:id="@+id/liPrice"
+            android:textSize="12sp"/>
+
+        <TextView
+            style="@style/ReportText"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.10"
+            android:text=""
+            android:gravity="end"
+            android:id="@+id/liAmount"
+            android:textSize="12sp"/>
+
+        <TextView
+            style="@style/ReportText"
+            android:layout_width="0sp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.7"
+            android:text="-Σ"
+            android:id="@+id/liReceived"
+            android:gravity="end"
+            android:textSize="12sp"/>
+    </LinearLayout>
+</LinearLayout>
