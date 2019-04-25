@@ -115,8 +115,8 @@ public class Admin extends GdriveBase {
         File sd = Environment.getExternalStorageDirectory().getAbsoluteFile();
         FileChannel source;
         FileChannel destination;
-
         String currentDBPath = getApplication().getDatabasePath(DatabaseHelper.DATABASE_NAME).getPath();
+
         System.out.println("User Name : " + userName);
         String backupDBName = userName + UHelper.setPresentDateDDMMYYhhmm() + ".db";
         String backupDBPath; // = "/download/" + backupDBName;
