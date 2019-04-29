@@ -56,7 +56,6 @@
                 android:id="@+id/sl_editText_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="showdatePicker"
                 android:padding="5dp"
                 android:textColor="#ffffff"
                 android:textSize="18sp" />
