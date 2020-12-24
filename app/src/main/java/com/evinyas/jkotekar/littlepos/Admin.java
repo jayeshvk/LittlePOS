@@ -1,6 +1,9 @@
 package com.evinyas.jkotekar.littlepos;
 
 
+import android.Manifest;
+import android.app.Activity;
+import android.app.Dialog;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -8,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
@@ -16,16 +20,26 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.evinyas.jkotekar.littlepos.model.BackupFile;
 import com.evinyas.jkotekar.littlepos.model.UHelper;
 import com.evinyas.jkotekar.littlepos.model.salesData;
 import com.github.angads25.filepicker.controller.DialogSelectionListener;
@@ -44,8 +58,23 @@ import com.google.android.gms.drive.OpenFileActivityBuilder;
 import com.google.android.gms.drive.query.Filters;
 import com.google.android.gms.drive.query.Query;
 import com.google.android.gms.drive.query.SearchableField;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnPausedListener;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -54,14 +83,19 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
-public class Admin extends GdriveBase {
+public class Admin extends Activity {
 
     private String userName;
     private ProgressDialog pDialog;
@@ -78,6 +112,13 @@ public class Admin extends GdriveBase {
     //private GoogleApiClient mGoogleApiClient;
     private DriveId mFolderDriveId;
 
+    FirebaseStorage firebaseStorage;
+    FirebaseDatabase firebaseDatabase;
+    ProgressDialog progressDialog;
+    StorageReference mStorageReference;
+    FirebaseAuth mAuth;
+    FirebaseUser user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,9 +127,13 @@ public class Admin extends GdriveBase {
         setContentView(R.layout.admin);
         userName = getsharedPref("username");
 
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
+
         ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
         progressBar.setVisibility(View.GONE);
 
+        progressDialog = new ProgressDialog(Admin.this);
         pDialog = new ProgressDialog(this);
         pDialog.setMessage("Please wait...");
         pDialog.setCancelable(false);
@@ -102,13 +147,6 @@ public class Admin extends GdriveBase {
         } catch (Exception e) {
             System.out.println("Reset boolean parse" + e);
         }
-        // Write a message to the database
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("message");
-
-        myRef.setValue("Hello, World!");
-
-
     }
 
     public void copyDBtoSD(View view) {
@@ -266,7 +304,7 @@ public class Admin extends GdriveBase {
 
     }
 
-    public void backupToGdrive(View view) {
+   /* public void backupToGdrive(View view) {
         if (isInternetAvailable()) {
             if (getGoogleApiClient().isConnected()) {
                 String driveid = getsharedPref("driveid");
@@ -282,13 +320,13 @@ public class Admin extends GdriveBase {
             } else toast("Not Connected to Google Drive");
         } else
             toast("Internet not available, please connect to Internet");
-    }
+    }*/
 
-    public void restoreFromGdrive(View view) {
+/*    public void restoreFromGdrive(View view) {
         pickFileFromGdrive();
-    }
+    }*/
 
-    public void changeGdriveAccount(View view) {
+/*    public void changeGdriveAccount(View view) {
         if (isInternetAvailable()) {
             if (getGoogleApiClient().isConnected()) {
                 Log.d(TAG, "Logged In");
@@ -298,7 +336,243 @@ public class Admin extends GdriveBase {
                 toast("Not Connected to Google Drive");
         } else
             toast("Internet not available, please connect to Internet");
+    }*/
+
+    public void onlineBackup(View view) {
+        if (ContextCompat.checkSelfPermission(Admin.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            firebaseStorage = FirebaseStorage.getInstance();
+            firebaseDatabase = FirebaseDatabase.getInstance();
+            final String filename;
+
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            progressDialog.setProgress(0);
+            progressDialog.setTitle("Data Uploading");
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+
+            UploadTask uploadTask;
+
+            String databaseFilePath = getApplication().getDatabasePath(DatabaseHelper.DATABASE_NAME).getPath();
+            //"/data/data/" + getPackageName() + "/databases/" + DatabaseHelper.DATABASE_NAME;
+            InputStream data = null;
+            try {
+                data = new FileInputStream(new File(databaseFilePath));
+            } catch (FileNotFoundException e) {
+                showProgressBar(false);
+                e.printStackTrace();
+            }
+
+            Uri file = Uri.fromFile(new File(databaseFilePath));
+            filename = user.getEmail().split("@")[0] +"_"+ System.currentTimeMillis();
+            System.out.println(filename);
+            mStorageReference = firebaseStorage.getReference().child("user/" + user.getUid()).child("Databases").child(filename + "");
+
+            uploadTask = mStorageReference.putFile(file);
+            // Listen for state changes, errors, and completion of the upload.
+            uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                    double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                    int currentProgress = (int) ((100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount()));
+                    progressDialog.setProgress(currentProgress);
+                    System.out.println("Upload is " + progress + "% done");
+                }
+            }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
+                    System.out.println("Upload is paused");
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle unsuccessful uploads
+                    Toast.makeText(getApplicationContext(), "Upload Failed" + exception, Toast.LENGTH_SHORT).show();
+
+                    progressDialog.setCancelable(true);
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                    toast("Upload is Successful");
+                    progressDialog.setCancelable(true);
+                    progressDialog.hide();
+                }
+            });
+
+            Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
+                    }
+                    System.out.println("URL : " + mStorageReference.getDownloadUrl());
+
+                    // Continue with the task to get the download URL
+                    return mStorageReference.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()) {
+                        Uri downloadUri = task.getResult();
+                        FirebaseDatabase mFirebaseDatabase = FirebaseDatabase.getInstance();
+                        DatabaseReference mDatabaseReference = mFirebaseDatabase.getReference().child("users/" + user.getUid() + "/Databases");
+                        mDatabaseReference.child(String.valueOf(filename)).setValue(downloadUri.toString());
+                        System.out.println("URI :" + downloadUri.toString());
+                    } else {
+                        // Handle failures
+                        // ...
+                    }
+                }
+            });
+
+        } else
+            ActivityCompat.requestPermissions(Admin.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9);
     }
+
+    public void onlineRestore(View view) {
+        System.out.println("Restore clicked");
+        FirebaseDatabase mFirebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference mDatabaseReference = mFirebaseDatabase.getReference().child("users/" + user.getUid() + "/Databases");
+        com.google.firebase.database.Query query = mDatabaseReference.limitToLast(1);
+
+        showProgressBar(true, "Getting recent backup file name");
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                showProgressBar(false);
+                for (DataSnapshot d : dataSnapshot.getChildren()
+                ) {
+                    restoreFromByte(d.getKey().toString());
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                showProgressBar(false);
+                toast("Unable to get recent file name, try again ");
+            }
+        });
+    }
+
+    private void restoreFromByte(String filename) {
+        if (ContextCompat.checkSelfPermission(Admin.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            firebaseStorage = FirebaseStorage.getInstance();
+            firebaseDatabase = FirebaseDatabase.getInstance();
+
+            final String databaseFile = "/data/data/" + getPackageName() + "/databases/" + DatabaseHelper.DATABASE_NAME;
+            mStorageReference = firebaseStorage.getReference().child("user/" + user.getUid()).child("Databases").child(filename + "");
+
+            final long ONE_MEGABYTE = 1024 * 1024;
+            showProgressBar(true, "Downloading Backup File");
+            mStorageReference.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                @Override
+                public void onSuccess(byte[] bytes) {
+                    showProgressBar(false);
+                    System.out.println("Data Downlaod Success " + bytes.length);
+                    File file = new File(databaseFile);
+                    try {
+
+                        OutputStream os = new FileOutputStream(file);
+                        os.write(bytes);
+                        os.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        toast("Unable to restore data to Appa" + e);
+                    }
+                    toast("Data Restored Successfully");
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    showProgressBar(false);
+                    toast("Unable to download file online" + exception.getMessage());
+                }
+            });
+
+
+        } else
+            ActivityCompat.requestPermissions(Admin.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9);
+
+    }
+
+    public void selectiveRestore(View view) {
+        final List<BackupFile> data = new ArrayList<>();
+        FirebaseDatabase mFirebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference mDatabaseReference = mFirebaseDatabase.getReference().child("users/" + user.getUid() + "/Databases");
+        com.google.firebase.database.Query query = mDatabaseReference.limitToLast(10);
+
+        showProgressBar(true, "Getting recent backup file name");
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                showProgressBar(false);
+                for (DataSnapshot d : dataSnapshot.getChildren()
+                ) {
+                    Long milli = Long.parseLong(d.getKey().split("_")[1]);
+                    data.add(new BackupFile(d.getKey().toString(), militoddmmyyyyhhmmss(milli)));
+                }
+                if (data.size() > 0)
+                    selectiveRestoreFileList(data);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                showProgressBar(false);
+                toast("Unable to get recent file name, try again ");
+            }
+        });
+    }
+
+    public void selectiveRestoreFileList(final List<BackupFile> data) {
+        final Dialog dialog = new Dialog(this);
+        //dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, 300);
+        dialog.setContentView(R.layout.recycler_popup_window);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(true);
+        dialog.show();
+
+        final BackupFile[] backupFile = new BackupFile[1];
+        final RecyclerView recyclerView = dialog.findViewById(R.id.bf_recycler_view);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(Admin.this));
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+
+
+        FileRecyclerViewAdapter adapter = new FileRecyclerViewAdapter(data);
+        recyclerView.setAdapter(adapter);
+
+        Button restore = dialog.findViewById(R.id.restore);
+        final TextView selectedFile = dialog.findViewById(R.id.selectedfile);
+
+        restore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (selectedFile.getText().length() > 0) {
+                    dialog.dismiss();
+                    restoreFromByte(selectedFile.getText().toString());
+                }
+            }
+        });
+
+        adapter.notifyDataSetChanged();
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getApplicationContext(), recyclerView, new RecyclerTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                backupFile[0] = data.get(position);
+                selectedFile.setText(backupFile[0].getFileName());
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
+    }
+
 
     class exportTOexcel extends AsyncTask<String, Void, Void> {
 
@@ -427,7 +701,7 @@ public class Admin extends GdriveBase {
     }
     /////////////////////////////Gdrive Integration
 
-    @Override
+/*    @Override
     public void onConnected(@Nullable Bundle bundle) {
         toast("Connected to Gdrive Account for Backup and Restore");
         DriveFolder filter = Drive.DriveApi.getRootFolder(getGoogleApiClient());
@@ -476,17 +750,17 @@ public class Admin extends GdriveBase {
             mFolderDriveId = result.getDriveFolder().getDriveId();
             setSharedPref("driveid", mFolderDriveId.encodeToString());
         }
-    };
+    };*/
 
     /******************************************************************
-     * create file in GOODrive
+/*     * create file in GOODrive
      *
-     * @param pFldr parent's ID
-     * @param titl  file name
-     * @param mime  file mime type  (application/x-sqlite3)
+     //* @param pFldr parent's ID
+     //* @param titl  file name
+     //* @param mime  file mime type  (application/x-sqlite3)
      */
 
-    public void saveToDrive(final DriveFolder pFldr, final String titl,
+/*    public void saveToDrive(final DriveFolder pFldr, final String titl,
                             final String mime) {
         showProgressBar(true);
         if (getGoogleApiClient() != null && pFldr != null && titl != null && mime != null)
@@ -580,9 +854,9 @@ public class Admin extends GdriveBase {
     private void downloadFileFromGdrive(DriveId driveID) {
         new RetrieveDriveFileContentsAsyncTask(this).execute(driveID);
 
-    }
+    }*/
 
-    final private class RetrieveDriveFileContentsAsyncTask
+/*    final private class RetrieveDriveFileContentsAsyncTask
             extends ApiClientAsyncTask<DriveId, Boolean, String> {
 
         RetrieveDriveFileContentsAsyncTask(Context context) {
@@ -629,9 +903,9 @@ public class Admin extends GdriveBase {
             }
             showMessage("Restore " + result);
         }
-    }
+    }*/
 
-    @Override
+/*    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case REQUEST_CODE_OPENER:
@@ -643,6 +917,25 @@ public class Admin extends GdriveBase {
             default:
                 super.onActivityResult(requestCode, resultCode, data);
         }
+    }*/
+
+    private void showProgressBar(final boolean visibility, final String message) {
+
+        runOnUiThread(new Runnable() {
+            public void run() {
+                pDialog.setMessage(message);
+                if (visibility)
+                    showpDialog();
+                else hidepDialog();
+            }
+        });
+    }
+
+    private String  militoddmmyyyyhhmmss(long mili) {
+        DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy  hh:mm:ss a");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(mili);
+        return formatter.format(calendar.getTime());
     }
 
 }

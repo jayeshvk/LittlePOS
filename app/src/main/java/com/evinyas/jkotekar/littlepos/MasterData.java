@@ -1,9 +1,10 @@
 package com.evinyas.jkotekar.littlepos;
 
 import android.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MasterData extends AppCompatActivity {
 

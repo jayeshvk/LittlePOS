@@ -2,28 +2,30 @@ package com.evinyas.jkotekar.littlepos;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.multidex.MultiDex;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.multidex.MultiDex;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,7 +36,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String USERNAME = "username";
     private static final String AUTOBACKUP = "autobackup";
 
-    private AdView mAdView;
+    FirebaseAuth mAuth;
+    FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,14 +47,15 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        if (readSharedPref("showhelp") == null)
-            showHelp();
-        writetoSharedPref("showhelp", "1");
+        mAuth = FirebaseAuth.getInstance();
 
-        mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder()
-                .build();
-        mAdView.loadAd(adRequest);
+        user = mAuth.getCurrentUser();
+
+        TextView tvUSer = findViewById(R.id.user);
+        tvUSer.setText(user.getEmail());
+
+        if (readSharedPref(USERNAME).length()==0)
+            showHelp();
 
         //for mashmello check if storgae permisiion exist and ask if not exist
         isStoragePermissionGranted();
@@ -76,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             System.out.println("Reset boolean parse" + e);
         }
+
+
     }
 
     @Override
@@ -145,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void popUpMessage() {
-        // get prompts.xml view
+/*        // get prompts.xml view
         LayoutInflater li = LayoutInflater.from(this);
         View promptsView = li.inflate(R.layout.promptsusername, null);
 
@@ -182,7 +188,10 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog alertDialog = alertDialogBuilder.create();
 
         // show it
-        alertDialog.show();
+        alertDialog.show();*/
+
+        writetoSharedPref("username", user.getEmail());
+
     }
 
     private void writetoSharedPref(String key, String text) {
@@ -249,9 +258,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if (mAdView != null) {
-            mAdView.destroy();
-        }
         super.onDestroy();
         System.out.println("Reset Status : " + Admin.DBRESET + " Auto Backup Shared Pref" + readSharedPref(AUTOBACKUP) + " Auto backup var " + autoBackup);
         writetoSharedPref("DBRESET", String.valueOf(Admin.DBRESET));
@@ -294,20 +300,40 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onPause() {
-        if (mAdView != null) {
-            mAdView.pause();
-        }
         super.onPause();
     }
 
     @Override
     public void onResume() {
-        if (mAdView != null) {
-            mAdView.resume();
-        }
         super.onResume();
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (Integer.parseInt(android.os.Build.VERSION.SDK) > 5
+                && keyCode == KeyEvent.KEYCODE_BACK
+                && event.getRepeatCount() == 0) {
+            Log.d("CDA", "onKeyDown Called");
+            onBackPressed();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
+    @Override
+    public void onBackPressed() {
+        Log.d("CDA", "onBackPressed Called");
+        moveTaskToBack(true);
+        android.os.Process.killProcess(android.os.Process.myPid());
+        System.exit(0);
+    }
+
+
+    public void logout(View view) {
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        mAuth.signOut();
+        writetoSharedPref(USERNAME, "");
+        startActivity(new Intent(MainActivity.this, Login.class));
+    }
 }
 

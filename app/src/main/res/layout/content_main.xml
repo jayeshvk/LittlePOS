@@ -4,7 +4,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient"
@@ -22,6 +21,15 @@
         android:layout_height="143dp"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/littlepos" />
+
+    <TextView
+        android:id="@+id/user"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/White"
+        android:text="TextView"
+        android:textAlignment="center"
+        android:padding="@dimen/margin5dp"/>
 
     <Button
         android:id="@+id/button3"
@@ -64,12 +72,19 @@
         android:background="@drawable/mainbuttonshape"
         android:onClick="admin"
         android:text="ADMIN" />
+    <Button
+        style="@style/mainbutton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/mainbuttonshape"
+        android:onClick="logout"
+        android:text="LOGOUT" />
 
-    <com.google.android.gms.ads.AdView
+<!--    <com.google.android.gms.ads.AdView
         android:paddingTop="10dp"
         android:id="@+id/adView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         ads:adSize="LARGE_BANNER"
-        ads:adUnitId="@string/banner_ad_unit_id" />
+        ads:adUnitId="@string/banner_ad_unit_id" />-->
 </LinearLayout>

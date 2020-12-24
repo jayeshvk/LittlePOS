@@ -3,32 +3,26 @@ package com.evinyas.jkotekar.littlepos;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.evinyas.jkotekar.littlepos.model.UHelper;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
+
 
 import java.util.List;
 
 public class Reports extends AppCompatActivity {
-    private AdView mAdView;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.reports);
-
-        mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder()
-                .build();
-        mAdView.loadAd(adRequest);
-
     }
 
     public void reportItem(View view) {
@@ -65,25 +59,19 @@ public class Reports extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        if (mAdView != null) {
-            mAdView.pause();
-        }
+
         super.onPause();
     }
 
     @Override
     protected void onResume() {
-        if (mAdView != null) {
-            mAdView.resume();
-        }
+
         super.onResume();
     }
 
     @Override
     protected void onDestroy() {
-        if (mAdView != null) {
-            mAdView.destroy();
-        }
+
         super.onDestroy();
     }
 

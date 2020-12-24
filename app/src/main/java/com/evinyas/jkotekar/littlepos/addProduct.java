@@ -44,7 +44,7 @@ public class addProduct extends DialogFragment {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(android.support.v4.app.DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
     }
 
     @Override

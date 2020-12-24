@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorAccent"
+        android:text="Select File"
+        android:textAlignment="center"
+        android:textSize="20dp"
+        android:textStyle="bold" />
+
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/bf_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:fadeScrollbars="false"
+        android:scrollbars="vertical" />
+
+    <TextView
+        android:id="@+id/selectedfile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#40000000"
+        android:textAlignment="center" />
+
+    <Button
+        android:id="@+id/restore"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Restore" />
+</LinearLayout>

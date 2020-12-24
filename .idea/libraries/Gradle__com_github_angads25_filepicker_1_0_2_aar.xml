@@ -1,10 +1,13 @@
 <component name="libraryTable">
   <library name="Gradle: com.github.angads25:filepicker:1.0.2@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e7b4189afed017287958574e82d57b1e/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e7b4189afed017287958574e82d57b1e/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/82334dc609729b071a8574d5e18d4a27/jetified-filepicker-1.0.2/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/82334dc609729b071a8574d5e18d4a27/jetified-filepicker-1.0.2/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/82334dc609729b071a8574d5e18d4a27/jetified-filepicker-1.0.2/res" />
     </CLASSES>
-    <JAVADOC />
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.angads25/filepicker/1.0.2/6cfe24a44227f96be2a5789d470c30b28969932/filepicker-1.0.2-javadoc.jar!/" />
+    </JAVADOC>
     <SOURCES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.angads25/filepicker/1.0.2/5c2535ad736411087489d3286476bcf66568462f/filepicker-1.0.2-sources.jar!/" />
     </SOURCES>

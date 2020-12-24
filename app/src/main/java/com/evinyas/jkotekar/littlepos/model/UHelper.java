@@ -3,10 +3,11 @@ package com.evinyas.jkotekar.littlepos.model;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.support.v7.app.AlertDialog;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
 
 import java.text.DecimalFormat;
 import java.text.ParseException;
