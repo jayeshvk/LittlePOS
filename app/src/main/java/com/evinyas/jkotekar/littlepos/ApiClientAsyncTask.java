@@ -25,7 +25,7 @@ import java.util.concurrent.CountDownLatch;
 public abstract class ApiClientAsyncTask<Params, Progress, Result>
         extends AsyncTask<Params, Progress, Result> {
 
-    private GoogleApiClient mClient;
+/*    private GoogleApiClient mClient;
 
     public ApiClientAsyncTask(Context context) {
         GoogleApiClient.Builder builder = new GoogleApiClient.Builder(context)
@@ -70,16 +70,16 @@ public abstract class ApiClientAsyncTask<Params, Progress, Result>
         }
     }
 
-    /**
+    *//**
      * Override this method to perform a computation on a background thread, while the client is
      * connected.
-     */
+     *//*
     protected abstract Result doInBackgroundConnected(Params... params);
 
-    /**
+    *//**
      * Gets the GoogleApliClient owned by this async task.
-     */
+     *//*
     protected GoogleApiClient getGoogleApiClient() {
         return mClient;
-    }
+    }*/
 }

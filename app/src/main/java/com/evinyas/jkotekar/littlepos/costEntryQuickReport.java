@@ -225,7 +225,7 @@ public class costEntryQuickReport extends DialogFragment {
         List<String> cdata = databaseHelper.getCostSumbyDate(null, null);
 
         LayoutInflater layoutInflater = LayoutInflater.from(costEntryQuickReport.this.getActivity());
-        View promptView = layoutInflater.inflate(R.layout.totalsalespopup, null);
+        View promptView = layoutInflater.inflate(R.layout.costreportquick, null);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(costEntryQuickReport.this.getActivity());
         alertDialogBuilder.setView(promptView);
 

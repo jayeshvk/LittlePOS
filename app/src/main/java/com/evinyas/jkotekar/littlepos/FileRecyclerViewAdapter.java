@@ -26,7 +26,6 @@ public class FileRecyclerViewAdapter extends RecyclerView.Adapter<FileRecyclerVi
 
     }
 
-
     public FileRecyclerViewAdapter(List<BackupFile> backupFileList) {
         this.fileList = backupFileList;
     }

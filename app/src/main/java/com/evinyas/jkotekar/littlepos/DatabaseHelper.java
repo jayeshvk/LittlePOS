@@ -87,7 +87,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_COSTDATA_COMMENTS = "comments";
     private static final String KEY_COSTDATA_Data1 = "Data1";
 
-
     private static DatabaseHelper sInstance;
 
     public static synchronized DatabaseHelper getInstance(Context context) {
@@ -122,6 +121,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // If a database already exists on disk with the same DATABASE_NAME, this method will NOT be called.
     @Override
     public void onCreate(SQLiteDatabase db) {
+
         String CREATE_CUSTOMER_TABLE = "CREATE TABLE " + TABLE_CUSTOMERS +
                 "(" +
                 KEY_CUSTOMER_ID + " INTEGER PRIMARY KEY," + // Define a primary key
@@ -202,6 +202,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_SALES_TABLE);
         db.execSQL(CREATE_COST_TABLE);
         db.execSQL(CREATE_COSTDATA_TABLE);
+    }
+
+    @Override
+    public void onOpen(SQLiteDatabase database) {
+        super.onOpen(database);
+        if(Build.VERSION.SDK_INT >= 28)
+        {
+            database.disableWriteAheadLogging();
+        }
     }
 
     // Called when the database needs to be upgraded.
@@ -791,7 +800,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result;
     }
 
-
     List<salesData> getSalesReportbyDate(int customerID, String from, String to) {
         List<salesData> sales = new ArrayList<>();
         String SALES_SELECT_QUERY;
@@ -1228,7 +1236,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return retID;
     }
 
-
     void salesRow(String slno) {
         // Create and/or open the database for writing
         SQLiteDatabase db = getWritableDatabase();
@@ -1352,5 +1359,71 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.endTransaction();
         }
         return i;
+    }
+
+    String getFirstEntry() {
+        String data = null;
+
+        String SELECT_FIRST_ENTRY;
+        SELECT_FIRST_ENTRY = String.format("SELECT %s FROM %s ORDER BY %s LIMIT 1",
+                KEY_SALES_DATE,
+                TABLE_SALES,
+                KEY_SALES_DATE
+                );
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery(SELECT_FIRST_ENTRY, null);
+        try {
+            if (cursor.moveToFirst()) {
+                do {
+                    data = cursor.getString(cursor.getColumnIndex(KEY_SALES_DATE));
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.d(TAG, "Error while trying to get Sales Data from database");
+        } finally {
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
+            }
+        }
+
+        return data;
+    }
+
+    List<String> getSalesByYear(String year) {
+        List<String> data = new ArrayList<>();
+
+        String SALESDATA_SUM_SALES_YEAR;
+            SALESDATA_SUM_SALES_YEAR = String.format("select sum(%s) as %s,sum(%s) as %s from %s where %s between '%s' and '%s'",
+                    KEY_SALES_AMOUNT,
+                    KEY_SALES_AMOUNT,
+                    KEY_SALES_RECEIVED,
+                    KEY_SALES_RECEIVED,
+                    TABLE_SALES,
+                    KEY_SALES_DATE,
+                    year+"-01-01",
+                    year+"-12-31"
+
+            );
+
+        // "getReadableDatabase()" and "getWriteableDatabase()" return the same object (except under low
+        // disk space scenarios)
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery(SALESDATA_SUM_SALES_YEAR, null);
+        try {
+            if (cursor.moveToFirst()) {
+                do {
+                    data.add(cursor.getString(cursor.getColumnIndex(KEY_SALES_AMOUNT)));
+                    data.add(cursor.getString(cursor.getColumnIndex(KEY_SALES_RECEIVED)));
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.d(TAG, "Error while trying to get Sales Data from database");
+        } finally {
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
+            }
+        }
+
+        return data;
     }
 }

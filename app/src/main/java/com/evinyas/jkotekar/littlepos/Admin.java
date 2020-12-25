@@ -4,36 +4,28 @@ package com.evinyas.jkotekar.littlepos;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -46,18 +38,7 @@ import com.github.angads25.filepicker.controller.DialogSelectionListener;
 import com.github.angads25.filepicker.model.DialogConfigs;
 import com.github.angads25.filepicker.model.DialogProperties;
 import com.github.angads25.filepicker.view.FilePickerDialog;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.drive.Drive;
-import com.google.android.gms.drive.DriveApi;
-import com.google.android.gms.drive.DriveContents;
-import com.google.android.gms.drive.DriveFile;
-import com.google.android.gms.drive.DriveFolder;
 import com.google.android.gms.drive.DriveId;
-import com.google.android.gms.drive.MetadataChangeSet;
-import com.google.android.gms.drive.OpenFileActivityBuilder;
-import com.google.android.gms.drive.query.Filters;
-import com.google.android.gms.drive.query.Query;
-import com.google.android.gms.drive.query.SearchableField;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -99,18 +80,14 @@ public class Admin extends Activity {
 
     private String userName;
     private ProgressDialog pDialog;
-    private PopupWindow popupWindow;
-    private NotificationCompat.Builder notification;
-    private NotificationManager notificationManager;
-    private Bitmap largeIcon;
     private DatabaseHelper databaseHelper;
     public static boolean DBRESET;
 
-    private static final int REQUEST_CODE_OPENER = 3;
+/*    private static final int REQUEST_CODE_OPENER = 3;*/
 
     private static final String TAG = "ADMIN";
-    //private GoogleApiClient mGoogleApiClient;
-    private DriveId mFolderDriveId;
+/*    //private GoogleApiClient mGoogleApiClient;
+    private DriveId mFolderDriveId;*/
 
     FirebaseStorage firebaseStorage;
     FirebaseDatabase firebaseDatabase;
@@ -138,10 +115,6 @@ public class Admin extends Activity {
         pDialog.setMessage("Please wait...");
         pDialog.setCancelable(false);
 
-        largeIcon = BitmapFactory.decodeResource(getResources(), R.drawable.pos);
-        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notification = new NotificationCompat.Builder(getApplicationContext());
-
         try {
             Admin.DBRESET = Boolean.parseBoolean(readSharedPref("DBRESET"));
         } catch (Exception e) {
@@ -155,8 +128,7 @@ public class Admin extends Activity {
         FileChannel destination;
 
         String currentDBPath = getApplication().getDatabasePath(DatabaseHelper.DATABASE_NAME).getPath();
-        System.out.println("User Name : " + userName);
-        String backupDBName = userName + UHelper.setPresentDateDDMMYYhhmm() + ".db";
+        String backupDBName = userName.split("@")[0] + UHelper.setPresentDateDDMMYYhhmm() + ".db";
         String backupDBPath; // = "/download/" + backupDBName;
 
         //create folder if not exist for Backingup data
@@ -205,17 +177,19 @@ public class Admin extends Activity {
         dialog.setDialogSelectionListener(new DialogSelectionListener() {
             @Override
             public void onSelectedFilePaths(String[] files) {
-                onSelectRestoreDBfromSD(files[0]);
+                //onSelectRestoreDBfromSD(files[0]);
+                rest(files[0]);
             }
 
         });
         dialog.show();
     }
 
-    private void onSelectRestoreDBfromSD(String selectedFilename) {
+/*    private void onSelectRestoreDBfromSD(String selectedFilename) {
 
-        String currentDBPath = getApplication().getDatabasePath(DatabaseHelper.DATABASE_NAME).getPath();
-
+        //String currentDBPath = getApplication().getDatabasePath(DatabaseHelper.DATABASE_NAME).getPath();
+        String currentDBPath = getApplicationContext().getDatabasePath(DatabaseHelper.DATABASE_NAME).getPath();
+        System.out.println("***" + currentDBPath);
         File sdCardDBPath = new File(selectedFilename);
         File currentDB = new File(currentDBPath);
         try {
@@ -236,6 +210,37 @@ public class Admin extends Activity {
         } catch (IOException e) {
             toast("Error Restoring from SD Card.");
             e.printStackTrace();
+        }
+    }*/
+
+    private void rest(String backupDBPath){
+        try {
+            File sd = Environment.getExternalStorageDirectory();
+            File data = Environment.getDataDirectory();
+            System.out.println(data+"_"+sd);
+
+            if (sd.canWrite()) {
+                String currentDBPath = getApplicationContext().getDatabasePath(DatabaseHelper.DATABASE_NAME).getPath();
+                //String backupDBPath = "database_name";
+                File currentDB = new File(currentDBPath);
+                File backupDB = new File(backupDBPath);
+                System.out.println(backupDBPath+"_"+currentDBPath);
+                System.out.println((double) backupDB.length() / 1024 + "  kb");
+                System.out.println("*"+(double) currentDB.length() / 1024 + "  kb");
+
+                if (currentDB.exists()) {
+                    FileChannel src = new FileInputStream(backupDB).getChannel();
+                    FileChannel dst = new FileOutputStream(currentDB).getChannel();
+                    dst.transferFrom(src, 0, src.size());
+                    src.close();
+                    dst.close();
+                    Toast.makeText(getApplicationContext(), "Database Restored successfully", Toast.LENGTH_SHORT).show();
+                    System.out.println((double) currentDB.length() / 1024 + "  kb");
+                }
+
+            }
+        } catch (Exception e) {
+            System.out.println(e);
         }
     }
 
@@ -462,8 +467,8 @@ public class Admin extends Activity {
             firebaseStorage = FirebaseStorage.getInstance();
             firebaseDatabase = FirebaseDatabase.getInstance();
 
-            final String databaseFile = "/data/data/" + getPackageName() + "/databases/" + DatabaseHelper.DATABASE_NAME;
-            mStorageReference = firebaseStorage.getReference().child("user/" + user.getUid()).child("Databases").child(filename + "");
+            final String databaseFile = getApplication().getDatabasePath(DatabaseHelper.DATABASE_NAME).getPath();
+            mStorageReference = firebaseStorage.getReference().child("user/" + user.getUid()).child("Databases").child(filename);
 
             final long ONE_MEGABYTE = 1024 * 1024;
             showProgressBar(true, "Downloading Backup File");
@@ -474,7 +479,6 @@ public class Admin extends Activity {
                     System.out.println("Data Downlaod Success " + bytes.length);
                     File file = new File(databaseFile);
                     try {
-
                         OutputStream os = new FileOutputStream(file);
                         os.write(bytes);
                         os.close();
@@ -573,7 +577,6 @@ public class Admin extends Activity {
         }));
     }
 
-
     class exportTOexcel extends AsyncTask<String, Void, Void> {
 
         @Override
@@ -643,7 +646,7 @@ public class Admin extends Activity {
         }
     }
 
-    //Helper methods
+/*    //Helper methods
     private boolean isInternetAvailable() {
         ConnectivityManager cm =
                 (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -651,7 +654,7 @@ public class Admin extends Activity {
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
-    }
+    }*/
 
     private void toast(String text) {
         Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT);
@@ -937,5 +940,7 @@ public class Admin extends Activity {
         calendar.setTimeInMillis(mili);
         return formatter.format(calendar.getTime());
     }
+
+
 
 }
