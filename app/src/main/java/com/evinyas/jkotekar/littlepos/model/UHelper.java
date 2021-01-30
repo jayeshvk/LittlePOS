@@ -186,15 +186,17 @@ public class UHelper {
 
     public static double parseDouble(String value) {
         double d;
+
         if (value == null)
             return 0;
         else
             try {
                 d = Double.parseDouble(value);
             } catch (NumberFormatException e) {
-                d = 0;
+                d = 0.0;
             }
-        return Double.parseDouble(String.format("%.2f", d));
+        String strDouble = String.format("%.2f", d);
+        return Double.parseDouble(strDouble);
     }
 
     public static int parseInt(String text) {

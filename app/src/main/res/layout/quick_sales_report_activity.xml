@@ -25,8 +25,17 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            app:srcCompat="@drawable/ic_poll_black_32dp"
-            android:onClick="salesPopUp"/>
+            app:srcCompat="@drawable/ic_poll_black_32dp" />
+
+        <ImageView
+            android:id="@+id/printImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="32dp"
+            android:layout_toStartOf="@+id/salesPopUpButton"
+            app:srcCompat="@drawable/ic_baseline_print_24" />
+
     </RelativeLayout>
 
     <LinearLayout

@@ -1,6 +1,7 @@
 package com.evinyas.jkotekar.littlepos;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -167,9 +168,13 @@ public class POS extends AppCompatActivity implements DatePickerFragment.OnDataP
                     bundle.putInt("cusid", cusID);
                     bundle.putString("grandtotal", "1000");
                     bundle.putString("customer", selectedCustomer);
-                    quickSalesReportFragment report = new quickSalesReportFragment();
-                    report.setArguments(bundle);
-                    report.show(getSupportFragmentManager(), "salesReport");
+
+                    Intent myIntent = new Intent(POS.this, quickSalesRepActivity.class);
+                    myIntent.putExtras(bundle);
+                    startActivity(myIntent);
+                    //quickSalesReportFragment report = new quickSalesReportFragment();
+                    //report.setArguments(bundle);
+                    //report.show(getSupportFragmentManager(), "salesReport");
                 }
             }
         });

@@ -14,10 +14,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.evinyas.jkotekar.littlepos.model.UHelper;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class Reports extends AppCompatActivity {
 
@@ -55,16 +57,16 @@ public class Reports extends AppCompatActivity {
 
         for (int i = fromYear; i <= toYear; i++) {
             HashMap<String, String> tmp = new HashMap<>();
-            List<String> salesByYear = databaseHelper.getSalesByYear(i + "");
+            List<Double> salesByYear = databaseHelper.getSalesByYear(i + "", 0);
             if (salesByYear.get(0) != null || salesByYear.get(1) != null) {
                 System.out.println(i + "=" + "Sales " + salesByYear.get(0) + "Received" + salesByYear.get(1) + "\n");
                 tmp.put(YEARS, i + "");
-                tmp.put(SALES, salesByYear.get(0));
-                tmp.put(PAYMENTTOTAL, salesByYear.get(1));
-                tmp.put(DUE, (Double.parseDouble(salesByYear.get(0)) - Double.parseDouble(salesByYear.get(1)) + ""));
+                NumberFormat formatter = NumberFormat.getIntegerInstance(new Locale("en", "IN"));
+                tmp.put(SALES, formatter.format(salesByYear.get(0)));
+                tmp.put(PAYMENTTOTAL, formatter.format(salesByYear.get(1)));
+                tmp.put(DUE, formatter.format(salesByYear.get(0) - salesByYear.get(1)));
                 feedList.add(tmp);
             }
-
         }
         if (data.size() > 0) {
             showSales(cdata.get(0), feedList);
@@ -107,6 +109,7 @@ public class Reports extends AppCompatActivity {
         LayoutInflater layoutInflater = LayoutInflater.from(this);
         View promptView = layoutInflater.inflate(R.layout.totalsalespopup, null);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
         alertDialogBuilder.setView(promptView);
 
         ListView list = promptView.findViewById(R.id.totalBusinessList);
@@ -129,4 +132,5 @@ public class Reports extends AppCompatActivity {
         AlertDialog alert = alertDialogBuilder.create();
         alert.show();
     }
+
 }

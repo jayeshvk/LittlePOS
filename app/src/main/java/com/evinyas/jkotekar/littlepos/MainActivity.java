@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.help:
                 AlertDialog.Builder about = new AlertDialog.Builder(this);
                 about.setTitle("About");
-                about.setMessage("Develped by EVINYA PVT LTD\nFor any issues and queries pleaase contact the developer at jayeshvk@gmail.com");
+                about.setMessage("Version 1.5.0\nDeveloped by EVINYAS PVT LTD\nFor any issues and queries pleaase contact the developer at jayeshvk@gmail.com");
                 AlertDialog aboutAlert = about.create();
                 aboutAlert.show();
                 return true;

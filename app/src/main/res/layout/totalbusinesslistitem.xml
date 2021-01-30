@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:background="@color/Amber900"
     android:orientation="horizontal"
-    android:paddingBottom="2dp">
+    android:paddingBottom="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,7 +31,6 @@
             android:text="Total Sales"
             android:textColor="@color/Black"
             android:textSize="14sp" />
-
         <TextView
             android:id="@+id/rcsiPaid"
             android:layout_width="0dp"
@@ -42,7 +41,6 @@
             android:text="Toal Payments"
             android:textColor="@color/Black"
             android:textSize="14sp" />
-
         <TextView
             android:id="@+id/rcsiDue"
             android:layout_width="0dp"

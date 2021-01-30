@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/LittlePOS.iml" filepath="$PROJECT_DIR$/LittlePOS.iml" group="LittlePOS" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="LittlePOS/app" />
+      <module fileurl="file://$PROJECT_DIR$/LittlePOS.iml" filepath="$PROJECT_DIR$/LittlePOS.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/LittlePOS.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/LittlePOS.app.iml" />
     </modules>
   </component>
 </project>

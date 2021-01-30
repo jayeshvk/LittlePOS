@@ -8,8 +8,8 @@ android {
         vectorDrawables.useSupportLibrary = true
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 3
-        versionName "1.1.0"
+        versionCode 6
+        versionName "1.6.0"
         multiDexEnabled true
     }
     buildTypes {
@@ -36,9 +36,11 @@ dependencies {
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'com.google.firebase:firebase-storage:19.2.1'
-    implementation 'com.google.firebase:firebase-auth:20.0.1'
+    implementation 'com.google.firebase:firebase-auth:20.0.2'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     testImplementation 'junit:junit:4.12'
-    implementation 'com.google.firebase:firebase-core:18.0.0'
+    implementation 'com.google.firebase:firebase-core:18.0.2'
+    implementation files('libs/cie-bluetooth-printer-sdk-v2.1.6.jar')
 
     apply plugin: 'com.google.gms.google-services'
 }

@@ -2,13 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_root"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="#26262A"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:padding="5dp">
     <ScrollView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
             android:layout_width="match_parent"
@@ -64,10 +64,8 @@
             <ListView
                 android:id="@+id/totalBusinessList"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:background="@drawable/shadow" >
-            </ListView>
+                android:layout_height="300dp"
+                android:background="@drawable/shadow" />
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -99,10 +97,8 @@
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="#FFFFFF" />
             </LinearLayout>
-
-
         </LinearLayout>
-    </ScrollView>
 
+    </ScrollView>
 
 </LinearLayout>

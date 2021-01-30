@@ -3,6 +3,7 @@ package com.evinyas.jkotekar.littlepos;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.widget.DatePicker;
 
@@ -19,8 +20,13 @@ public class DatePickerFragment extends DialogFragment
     private OnDataPass dataPasser;
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Activity activity = null;
+
+        if (context instanceof Activity){
+            activity=(Activity) context;
+        }
         try {
             dataPasser = (OnDataPass) activity;
         } catch (ClassCastException e) {
@@ -46,7 +52,7 @@ public class DatePickerFragment extends DialogFragment
         calendar.set(year, month, day);
         SimpleDateFormat fmt = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH);
         String date = fmt.format(calendar.getTime());
-        Boolean stat;
+        boolean stat;
         if (getArguments() != null)
             stat = getArguments().getBoolean("stat");
         else stat = false;

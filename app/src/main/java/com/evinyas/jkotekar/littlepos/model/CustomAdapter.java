@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat;
 
 import com.evinyas.jkotekar.littlepos.R;
 import com.evinyas.jkotekar.littlepos.ReportItem;
+import com.evinyas.jkotekar.littlepos.quickSalesRepActivity;
 import com.evinyas.jkotekar.littlepos.quickSalesReportFragment;
 
 import java.util.List;
@@ -33,7 +34,7 @@ public class CustomAdapter extends BaseAdapter implements View.OnClickListener {
      * Declare Used Variables
      *********/
     private Activity activity;
-    private quickSalesReportFragment fragment;
+    private quickSalesRepActivity fragment;
     private List data;
     private static LayoutInflater inflater = null;
     public Resources res;
@@ -55,7 +56,7 @@ public class CustomAdapter extends BaseAdapter implements View.OnClickListener {
 
     }
 
-    public CustomAdapter(Activity a, List d, Resources resLocal, quickSalesReportFragment f) {
+    public CustomAdapter(Activity a, List d, Resources resLocal, quickSalesRepActivity f) {
 
         /********** Take passed values **********/
         activity = a;
@@ -149,7 +150,7 @@ public class CustomAdapter extends BaseAdapter implements View.OnClickListener {
             holder.product.setText(tempValues.getProductName());
             holder.price.setText(tempValues.getPrice());
             holder.quantity.setText(tempValues.getQuantity());
-            holder.amount.setText(tempValues.getAmount());
+            holder.amount.setText(UHelper.stringDouble(tempValues.getAmount()+""));
             //if Comments exist insert the note EMoji Next to received field
             if (tempValues.getComments().length() != 0) {
                 holder.received.setText(tempValues.getReceived() + " " + UHelper.getEmijoByUnicode(0x1F4C4));

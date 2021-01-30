@@ -207,8 +207,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onOpen(SQLiteDatabase database) {
         super.onOpen(database);
-        if(Build.VERSION.SDK_INT >= 28)
-        {
+        if (Build.VERSION.SDK_INT >= 28) {
             database.disableWriteAheadLogging();
         }
     }
@@ -310,7 +309,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     int updateCustomer(Customer customer) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Integer retID = 0;
+        int retID = 0;
 
         ContentValues values = new ContentValues();
         values.put(KEY_CUSTOMER_NAME, customer.getCustomerName());
@@ -329,7 +328,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     int deleteCustomer(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Integer retID = 0;
+        int retID = 0;
 
         try {
 
@@ -481,7 +480,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     ///update costItem
     int updateProduct(Product product) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Integer retID = 0;
+        int retID = 0;
 
         ContentValues values = new ContentValues();
         values.put(KEY_PRODUCT_NAME, product.getProductName());
@@ -502,7 +501,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     ///update Cost Item
     int updateCostItem(Cost cost) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Integer retID = 0;
+        int retID = 0;
 
         ContentValues values = new ContentValues();
         values.put(KEY_COST_NAME, cost.getCostName());
@@ -521,7 +520,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Delete Customer
     int deleteProduct(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Integer retID = 0;
+        int retID = 0;
         try {
 
             retID = db.delete(TABLE_PRODUCTS, KEY_PRODUCT_ID + " = ?",
@@ -537,7 +536,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Delete Customer
     int deleteCost(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Integer retID = 0;
+        int retID = 0;
         try {
 
             retID = db.delete(TABLE_COST_ITEM, KEY_COST_ID + " = ?",
@@ -1369,7 +1368,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 KEY_SALES_DATE,
                 TABLE_SALES,
                 KEY_SALES_DATE
-                );
+        );
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery(SELECT_FIRST_ENTRY, null);
         try {
@@ -1389,10 +1388,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return data;
     }
 
-    List<String> getSalesByYear(String year) {
-        List<String> data = new ArrayList<>();
+    List<Double> getSalesByYear(String year, int cusId) {
+        List<Double> data = new ArrayList<>();
+        String SALESDATA_SUM_SALES_YEAR = "";
 
-        String SALESDATA_SUM_SALES_YEAR;
+        if (cusId > 0) {
+            SALESDATA_SUM_SALES_YEAR = String.format("select sum(%s) as %s,sum(%s) as %s from %s where %s between '%s' and '%s' and %s = %s",
+                    KEY_SALES_AMOUNT,
+                    KEY_SALES_AMOUNT,
+                    KEY_SALES_RECEIVED,
+                    KEY_SALES_RECEIVED,
+                    TABLE_SALES,
+                    KEY_SALES_DATE,
+                    year + "-01-01",
+                    year + "-12-31",
+                    KEY_SALES_CUSTID,
+                    cusId
+            );
+        } else {
+
             SALESDATA_SUM_SALES_YEAR = String.format("select sum(%s) as %s,sum(%s) as %s from %s where %s between '%s' and '%s'",
                     KEY_SALES_AMOUNT,
                     KEY_SALES_AMOUNT,
@@ -1400,10 +1414,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     KEY_SALES_RECEIVED,
                     TABLE_SALES,
                     KEY_SALES_DATE,
-                    year+"-01-01",
-                    year+"-12-31"
-
-            );
+                    year + "-01-01",
+                    year + "-12-31");
+        }
 
         // "getReadableDatabase()" and "getWriteableDatabase()" return the same object (except under low
         // disk space scenarios)
@@ -1412,8 +1425,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         try {
             if (cursor.moveToFirst()) {
                 do {
-                    data.add(cursor.getString(cursor.getColumnIndex(KEY_SALES_AMOUNT)));
-                    data.add(cursor.getString(cursor.getColumnIndex(KEY_SALES_RECEIVED)));
+                    data.add(cursor.getDouble(cursor.getColumnIndex(KEY_SALES_AMOUNT)));
+                    data.add(cursor.getDouble(cursor.getColumnIndex(KEY_SALES_RECEIVED)));
+
                 } while (cursor.moveToNext());
             }
         } catch (Exception e) {
