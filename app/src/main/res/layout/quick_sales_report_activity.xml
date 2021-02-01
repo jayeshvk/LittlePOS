@@ -194,6 +194,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.9"
+                    android:gravity="start"
                     android:text="Date"
                     android:textSize="12sp" />
 
@@ -203,7 +204,7 @@
                     android:layout_width="0sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1.8"
-                    android:gravity="end"
+                    android:gravity="start"
                     android:text="Product"
                     android:textSize="12sp" />
 

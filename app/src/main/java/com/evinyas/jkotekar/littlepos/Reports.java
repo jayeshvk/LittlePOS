@@ -2,12 +2,12 @@ package com.evinyas.jkotekar.littlepos;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +23,7 @@ import java.util.Locale;
 
 public class Reports extends AppCompatActivity {
 
+    private static final String COST = "Costs";
     final String SALES = "Sales";
     final String PAYMENTTOTAL = "Payments";
     final String DUE = "Dues";
@@ -48,28 +49,43 @@ public class Reports extends AppCompatActivity {
         ArrayList<HashMap<String, String>> feedList = new ArrayList<>();
 
         List<String> data = databaseHelper.getSalesSumbyCustomer(0, "", "");
-        List<String> cdata = databaseHelper.getCostSumbyDate(null, null);
+
 
         String first = databaseHelper.getFirstEntry().substring(0, 4);
         int toYear = Calendar.getInstance().get(Calendar.YEAR);
         int fromYear = Integer.parseInt(first);
-        System.out.println(fromYear + "*" + toYear);
-
         for (int i = fromYear; i <= toYear; i++) {
             HashMap<String, String> tmp = new HashMap<>();
-            List<Double> salesByYear = databaseHelper.getSalesByYear(i + "", 0);
+            Calendar cal = Calendar.getInstance();
+            int m = UHelper.parseInt(readSharedPref("STARTMONTH"));
+            cal.set(i - 1, m, 1);
+            cal.add(Calendar.MONTH, 11);
+            String fy = (i - 1) + "";
+            String ty = cal.get(Calendar.YEAR) + "";
+            String fm = String.format("%02d", (m + 1));
+            String tm = String.format("%02d", cal.get(Calendar.MONTH) + 1);
+
+            List<Double> salesByYear = databaseHelper.getSalesByYear(fy, ty, fm, tm, cal.getActualMaximum(Calendar.DATE) + "", 0);
+            List<String> cdata = databaseHelper.getCostSumbyDate(fy + "-" + m + "-" + "01", ty + "-" + tm + "-" + "01");
+
+            String yrs = fy.substring(2, 4) + "-" + ty.substring(2, 4);
+
             if (salesByYear.get(0) != null || salesByYear.get(1) != null) {
+
                 System.out.println(i + "=" + "Sales " + salesByYear.get(0) + "Received" + salesByYear.get(1) + "\n");
-                tmp.put(YEARS, i + "");
+                tmp.put(YEARS, yrs);
                 NumberFormat formatter = NumberFormat.getIntegerInstance(new Locale("en", "IN"));
                 tmp.put(SALES, formatter.format(salesByYear.get(0)));
                 tmp.put(PAYMENTTOTAL, formatter.format(salesByYear.get(1)));
                 tmp.put(DUE, formatter.format(salesByYear.get(0) - salesByYear.get(1)));
+                if (cdata.get(0) == null)
+                    cdata.set(0, "0");
+                tmp.put(COST, formatter.format(UHelper.parseDouble(cdata.get(0))));
                 feedList.add(tmp);
             }
         }
         if (data.size() > 0) {
-            showSales(cdata.get(0), feedList);
+            showSales(feedList);
         }
 
     }
@@ -105,7 +121,7 @@ public class Reports extends AppCompatActivity {
     }
 
     //sub methods
-    protected void showSales(String cdata, ArrayList<HashMap<String, String>> busdata) {
+    protected void showSales(ArrayList<HashMap<String, String>> busdata) {
         LayoutInflater layoutInflater = LayoutInflater.from(this);
         View promptView = layoutInflater.inflate(R.layout.totalsalespopup, null);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
@@ -114,14 +130,11 @@ public class Reports extends AppCompatActivity {
 
         ListView list = promptView.findViewById(R.id.totalBusinessList);
         SimpleAdapter adapter = new SimpleAdapter(getApplicationContext(), busdata, R.layout.totalbusinesslistitem,
-                new String[]{YEARS, SALES, PAYMENTTOTAL, DUE},
-                new int[]{R.id.rcsiYear, R.id.rcsiSales, R.id.rcsiPaid, R.id.rcsiDue});
+                new String[]{YEARS, SALES, PAYMENTTOTAL, DUE, COST},
+                new int[]{R.id.rcsiYear, R.id.rcsiSales, R.id.rcsiPaid, R.id.rcsiDue, R.id.rcsiCost});
         list.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
-
-        TextView totalCost = (TextView) promptView.findViewById(R.id.popupTotalCost);
-        totalCost.setText(UHelper.stringDouble(cdata));
         alertDialogBuilder
                 .setCancelable(false)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -131,6 +144,13 @@ public class Reports extends AppCompatActivity {
                 });
         AlertDialog alert = alertDialogBuilder.create();
         alert.show();
+    }
+
+    private String readSharedPref(String KEY) {
+        String returnData = null;
+        String SHAREDPREFNAME = "LittlePOSPrefs";
+        SharedPreferences settings = getSharedPreferences(SHAREDPREFNAME, 0);
+        return settings.getString("STARTMONTH", 0 + "");
     }
 
 }

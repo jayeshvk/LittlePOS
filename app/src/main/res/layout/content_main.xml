@@ -72,13 +72,6 @@
         android:background="@drawable/mainbuttonshape"
         android:onClick="admin"
         android:text="ADMIN" />
-    <Button
-        style="@style/mainbutton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/mainbuttonshape"
-        android:onClick="logout"
-        android:text="LOGOUT" />
 
 <!--    <com.google.android.gms.ads.AdView
         android:paddingTop="10dp"

@@ -9,8 +9,17 @@
         android:visible="true"
         app:showAsAction="never" />
     <item
+        android:id="@+id/financial_period"
+        android:title="Set Finance Period"
+        android:visible="true"
+        app:showAsAction="never"/>
+    <item
         android:id="@+id/action_user_name"
         android:title="Show User"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_logout"
+        android:title="Log Out"
         app:showAsAction="never" />
     <item
         android:id="@+id/instructions"

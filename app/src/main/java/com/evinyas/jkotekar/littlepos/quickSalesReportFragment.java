@@ -1,70 +1,14 @@
 package com.evinyas.jkotekar.littlepos;
 
 
-import android.app.Activity;
-import android.app.Dialog;
-import android.bluetooth.BluetoothAdapter;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.text.Layout;
-import android.text.TextPaint;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
-import com.cie.btp.CieBluetoothPrinter;
-import com.cie.btp.DebugLog;
-import com.cie.btp.PrintDensity;
-import com.cie.btp.PrinterWidth;
-import com.evinyas.jkotekar.littlepos.model.CustomAdapter;
-import com.evinyas.jkotekar.littlepos.model.UHelper;
-import com.evinyas.jkotekar.littlepos.model.salesData;
-
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-
-import static com.cie.btp.BtpConsts.RECEIPT_PRINTER_CONN_DEVICE_NAME;
-import static com.cie.btp.BtpConsts.RECEIPT_PRINTER_CONN_STATE_CONNECTED;
-import static com.cie.btp.BtpConsts.RECEIPT_PRINTER_CONN_STATE_CONNECTING;
-import static com.cie.btp.BtpConsts.RECEIPT_PRINTER_CONN_STATE_LISTEN;
-import static com.cie.btp.BtpConsts.RECEIPT_PRINTER_CONN_STATE_NONE;
-import static com.cie.btp.BtpConsts.RECEIPT_PRINTER_MESSAGES;
-import static com.cie.btp.BtpConsts.RECEIPT_PRINTER_MSG;
-import static com.cie.btp.BtpConsts.RECEIPT_PRINTER_NOTIFICATION_ERROR_MSG;
-import static com.cie.btp.BtpConsts.RECEIPT_PRINTER_NOTIFICATION_MSG;
-import static com.cie.btp.BtpConsts.RECEIPT_PRINTER_NOT_CONNECTED;
-import static com.cie.btp.BtpConsts.RECEIPT_PRINTER_NOT_FOUND;
-import static com.cie.btp.BtpConsts.RECEIPT_PRINTER_SAVED;
-import static com.cie.btp.BtpConsts.RECEIPT_PRINTER_STATUS;
 
 /**
  * Created by jkotekar on 6/2/2016.
  */
 public class quickSalesReportFragment extends DialogFragment {
 
+/*
     private TextView gross;
     private TextView payments;
     private TextView net;
@@ -222,9 +166,11 @@ public class quickSalesReportFragment extends DialogFragment {
         getGrandTotal();
     }
 
-    /*****************
+    */
+/*****************
      * This function used by adapter
-     ****************/
+     ****************//*
+
     public void onItemClick(int mPosition) {
         salesData tempSalesData;
         if (CustomListViewValuesArr.size() != 0) {
@@ -354,7 +300,8 @@ public class quickSalesReportFragment extends DialogFragment {
         AlertDialog alert = alertDialogBuilder.create();
         alert.show();
 
-        /*TextView totalSales = (TextView) promptView.findViewById(R.id.popupTotalSales);
+        */
+/*TextView totalSales = (TextView) promptView.findViewById(R.id.popupTotalSales);
         TextView totalPayments = (TextView) promptView.findViewById(R.id.popupTotalPayments);
         TextView totalDues = (TextView) promptView.findViewById(R.id.popupTotalDues);
 
@@ -370,7 +317,8 @@ public class quickSalesReportFragment extends DialogFragment {
                     }
                 });
         AlertDialog alert = alertDialogBuilder.create();
-        alert.show();*/
+        alert.show();*//*
+
     }
 
     private boolean isBluetoothEnabled() {
@@ -619,6 +567,7 @@ public class quickSalesReportFragment extends DialogFragment {
         mPrinter.onActivityDestroy();
         super.onDestroy();
     }
+*/
 
 
 }

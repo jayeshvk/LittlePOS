@@ -50,5 +50,14 @@
             android:text="Toal Dues"
             android:textColor="@color/Black"
             android:textSize="14sp" />
+        <TextView
+            android:id="@+id/rcsiCost"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.75"
+            android:gravity="end"
+            android:text="0"
+            android:textColor="@color/Black"
+            android:textSize="14sp" />
     </LinearLayout>
 </LinearLayout>

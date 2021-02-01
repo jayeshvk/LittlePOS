@@ -7,10 +7,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Layout;
 import android.text.TextPaint;
@@ -44,6 +44,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import static com.cie.btp.BtpConsts.PRINTER_DISCONNECTED;
 import static com.cie.btp.BtpConsts.RECEIPT_PRINTER_CONN_DEVICE_NAME;
 import static com.cie.btp.BtpConsts.RECEIPT_PRINTER_CONN_STATE_CONNECTED;
 import static com.cie.btp.BtpConsts.RECEIPT_PRINTER_CONN_STATE_CONNECTING;
@@ -73,6 +74,7 @@ public class quickSalesRepActivity extends AppCompatActivity implements DatePick
     private int cusID;
 
     // to show total busines per customer per year
+    static final String COST = "Costs";
     final String SALES = "Sales";
     final String PAYMENTTOTAL = "Payments";
     final String DUE = "Dues";
@@ -87,6 +89,7 @@ public class quickSalesRepActivity extends AppCompatActivity implements DatePick
     private static final int RIGHT = -1;
     private static final int CENTER = 0;
     public static final int REQUEST_ENABLE_BT = 9;
+    boolean printerConnected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,7 +137,10 @@ public class quickSalesRepActivity extends AppCompatActivity implements DatePick
         print.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                print();
+                if (printerConnected)
+                    print();
+                else connectPrinter();
+
             }
         });
 
@@ -152,16 +158,15 @@ public class quickSalesRepActivity extends AppCompatActivity implements DatePick
         totalForTheDay = (TextView) findViewById(R.id.totalForDay);
         getGrandTotal();
         refreshList();
-        connectPrinter();
     }
 
     private void connectPrinter() {
-
         if (!isBluetoothEnabled()) {
             toast("Bluetooth is not switched on");
 
         } else {
-            connect();
+            if (!printerConnected)
+                connect();
         }
     }
 
@@ -208,6 +213,8 @@ public class quickSalesRepActivity extends AppCompatActivity implements DatePick
     }
 
     private void getListTotal() {
+        sum = 0;
+        rec = 0;
         for (salesData sd : CustomListViewValuesArr) {
             sum = sum + UHelper.parseDouble(sd.getAmount());
             rec = rec + UHelper.parseDouble(sd.getReceived());
@@ -299,7 +306,6 @@ public class quickSalesRepActivity extends AppCompatActivity implements DatePick
 
         //List<String> data = databaseHelper.getSalesSumbyCustomer(cusID, "", "");
         //start of new fucntionality to get total business per customer per year
-        List<String> cdata = databaseHelper.getCostSumbyDate(null, null);
 
         String first = databaseHelper.getFirstEntry().substring(0, 4);
         int toYear = Calendar.getInstance().get(Calendar.YEAR);
@@ -308,14 +314,30 @@ public class quickSalesRepActivity extends AppCompatActivity implements DatePick
 
         for (int i = fromYear; i <= toYear; i++) {
             HashMap<String, String> tmp = new HashMap<>();
-            List<Double> salesByYear = databaseHelper.getSalesByYear(i + "", cusID);
+            Calendar cal = Calendar.getInstance();
+            int m = UHelper.parseInt(readSharedPref("STARTMONTH"));
+            cal.set(i - 1, m, 1);
+            cal.add(Calendar.MONTH, 11);
+            String fy = (i - 1) + "";
+            String ty = cal.get(Calendar.YEAR) + "";
+            String fm = String.format("%02d", (m + 1));
+            String tm = String.format("%02d", cal.get(Calendar.MONTH) + 1);
+
+            List<Double> salesByYear = databaseHelper.getSalesByYear(fy, ty, fm, tm, cal.getActualMaximum(Calendar.DATE) + "", cusID);
+            List<String> cdata = databaseHelper.getCostSumbyDate(fy + "-" + m + "-" + "01", ty + "-" + tm + "-" + "01");
+
+            String yrs = fy.substring(2, 4) + "-" + ty.substring(2, 4);
             if (salesByYear.get(0) != null || salesByYear.get(1) != null) {
-                System.out.println(i + "=" + "Sales " + salesByYear.get(0) + "Received" + salesByYear.get(1) + "\n");
-                tmp.put(YEARS, i + "");
+                System.out.println(yrs + "=" + "Sales " + salesByYear.get(0) + "Received" + salesByYear.get(1) + "\n");
+                tmp.put(YEARS, yrs);
                 NumberFormat formatter = NumberFormat.getIntegerInstance(new Locale("en", "IN"));
                 tmp.put(SALES, formatter.format(salesByYear.get(0)));
                 tmp.put(PAYMENTTOTAL, formatter.format(salesByYear.get(1)));
                 tmp.put(DUE, formatter.format(salesByYear.get(0) - salesByYear.get(1)));
+                if (cdata.get(0) == null)
+                    cdata.set(0, "0");
+                tmp.put(COST, formatter.format(UHelper.parseDouble(cdata.get(0))));
+
                 feedList.add(tmp);
             }
         }
@@ -327,14 +349,11 @@ public class quickSalesRepActivity extends AppCompatActivity implements DatePick
 
         ListView list = promptView.findViewById(R.id.totalBusinessList);
         SimpleAdapter adapter = new SimpleAdapter(this, feedList, R.layout.totalbusinesslistitem,
-                new String[]{YEARS, SALES, PAYMENTTOTAL, DUE},
-                new int[]{R.id.rcsiYear, R.id.rcsiSales, R.id.rcsiPaid, R.id.rcsiDue});
+                new String[]{YEARS, SALES, PAYMENTTOTAL, DUE, COST},
+                new int[]{R.id.rcsiYear, R.id.rcsiSales, R.id.rcsiPaid, R.id.rcsiDue, R.id.rcsiCost});
         list.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
-
-        TextView totalCost = (TextView) promptView.findViewById(R.id.popupTotalCost);
-        totalCost.setText(UHelper.stringDouble(cdata.get(0)));
         alertDialogBuilder
                 .setCancelable(false)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -379,6 +398,7 @@ public class quickSalesRepActivity extends AppCompatActivity implements DatePick
     }
 
     void connect() {
+        toast("Connecting to Printer");
         try {
             mPrinter.initService(this);
         } catch (Exception e) {
@@ -394,14 +414,18 @@ public class quickSalesRepActivity extends AppCompatActivity implements DatePick
             Bundle b = intent.getExtras();
             switch (b.getInt(RECEIPT_PRINTER_STATUS)) {
                 case RECEIPT_PRINTER_CONN_STATE_NONE:
-                    toast("Printer Not Connected");
+                    //toast("Printer Not Connected");
+                    printerConnected = false;
                     break;
                 case RECEIPT_PRINTER_CONN_STATE_LISTEN:
                     break;
                 case RECEIPT_PRINTER_CONN_STATE_CONNECTING:
+                    toast("Connecting to Printer, please wait");
                     break;
                 case RECEIPT_PRINTER_CONN_STATE_CONNECTED:
+                    printerConnected = true;
                     toast("Printer Connected");
+                    print();
                     break;
                 case RECEIPT_PRINTER_CONN_DEVICE_NAME:
                     break;
@@ -410,15 +434,21 @@ public class quickSalesRepActivity extends AppCompatActivity implements DatePick
                     break;
                 case RECEIPT_PRINTER_NOTIFICATION_MSG:
                     String m = b.getString(RECEIPT_PRINTER_MSG);
+                    //toast(m);
                     break;
                 case RECEIPT_PRINTER_NOT_CONNECTED:
-                    toast("Status : Printer Not Connected");
+                    //toast("Status : Printer Not Connected");
+                    printerConnected = false;
                     break;
                 case RECEIPT_PRINTER_NOT_FOUND:
-                    toast("Status : Printer Not Found");
+                    toast("Printer Not Found");
+                    printerConnected = false;
                     break;
                 case RECEIPT_PRINTER_SAVED:
-                    toast("Printer Saved as Favourite");
+                    //toast("Printer Saved as Favourite");
+                    break;
+                case PRINTER_DISCONNECTED:
+                    toast("Printer Disconnected");
                     break;
             }
         }
@@ -441,28 +471,32 @@ public class quickSalesRepActivity extends AppCompatActivity implements DatePick
         textPaint.setTextSize(40);
         textPaint.setTypeface(custom_font);
         mPrinter.printUnicodeText("Cream Basket", Layout.Alignment.ALIGN_CENTER, textPaint);
-        mPrintUnicodeText(UHelper.setPresentDateddMMyyyy(), 30, CENTER);
-        mPrintUnicodeText("Name : " + customer, 22, LEFT);
         mPrinter.setPrintDensity(PrintDensity.NORMAL);
-        mPrintUnicodeText("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", 22, CENTER);
-        mPrintUnicodeText("Product Name   " + " " + "Quanty" + " " + "  Amount", textSize, LEFT);
-        mPrintUnicodeText("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", 22, CENTER);
+        mPrintUnicodeText(UHelper.setPresentDateddMMyyyy(), 30, CENTER, Typeface.NORMAL);
+        mPrintUnicodeText("Name : " + customer, 22, LEFT, Typeface.BOLD_ITALIC);
+        mPrintUnicodeText("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", 22, CENTER, Typeface.NORMAL);
+        mPrintUnicodeText("Product Name   " + " " + "Quanty" + " " + "  Amount", textSize, LEFT, Typeface.NORMAL);
+        mPrintUnicodeText("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", 22, CENTER, Typeface.NORMAL);
         for (int i = 0; i < CustomListViewValuesArr.size(); i++) {
             String pName = CustomListViewValuesArr.get(i).getProductName();
             String qty = CustomListViewValuesArr.get(i).getQuantity();
             String amt = UHelper.stringDouble(CustomListViewValuesArr.get(i).getAmount());
-
+            if (qty == null) {
+                pName = "Payments";
+                qty = "";
+                amt = "-" + UHelper.stringDouble(CustomListViewValuesArr.get(i).getReceived());
+            }
+            pName = pName != null ? pName : "Payments";
             pName = rightpad(pName, 16);
             qty = leftpad(qty, 6);
             amt = leftpad(amt, 8);
 
-            mPrintUnicodeText(pName + " " + qty + " " + amt, textSize, LEFT);
-
+            mPrintUnicodeText(pName + " " + qty + " " + amt, textSize, LEFT, Typeface.NORMAL);
         }
-        mPrintUnicodeText("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", 22, CENTER);
-        mPrintUnicodeText(rightpad("Total", 20) + leftpad(UHelper.stringDouble(sum + ""), 12), textSize, LEFT);
-        mPrintUnicodeText(rightpad("Received", 20) + leftpad(UHelper.stringDouble(rec + ""), 12), textSize, LEFT);
-        mPrintUnicodeText(rightpad("Balance", 20) + leftpad(UHelper.stringDouble((sum - rec) + ""), 12), textSize, LEFT);
+        mPrintUnicodeText("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", 22, CENTER, Typeface.NORMAL);
+        mPrintUnicodeText(rightpad("Total", 20) + leftpad(UHelper.stringDouble(sum + ""), 12), textSize, LEFT, Typeface.BOLD);
+        mPrintUnicodeText(rightpad("Received", 20) + leftpad("-" + UHelper.stringDouble(rec + ""), 12), textSize, LEFT, Typeface.BOLD);
+        mPrintUnicodeText(rightpad("Balance", 20) + leftpad(UHelper.stringDouble((sum - rec) + ""), 12), textSize, LEFT, Typeface.BOLD);
 
         mPrinter.printLineFeed();
         mPrinter.printLineFeed();
@@ -487,7 +521,7 @@ public class quickSalesRepActivity extends AppCompatActivity implements DatePick
         mPrinter.onActivityRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-    private void mPrintUnicodeText(String text, int size, int almnt) {
+    private void mPrintUnicodeText(String text, int size, int almnt, int typefaceType) {
         Layout.Alignment alignment = null;
         switch (almnt) {
             case 0:
@@ -500,11 +534,12 @@ public class quickSalesRepActivity extends AppCompatActivity implements DatePick
                 alignment = Layout.Alignment.ALIGN_OPPOSITE;
                 break;
         }
-        Typeface font = Typeface.createFromAsset(getAssets(), "fonts/Cousine-Regular.ttf");
+        Typeface plain = Typeface.createFromAsset(getAssets(), "fonts/Cousine-Regular.ttf");
+        Typeface typeface = Typeface.create(plain, typefaceType);
         TextPaint textPaint = new TextPaint();
         textPaint.setColor(Color.BLACK);
         textPaint.setTextSize(size);
-        textPaint.setTypeface(font);
+        textPaint.setTypeface(typeface);
         System.out.println("Print status **" + mPrinter.printUnicodeText(text, alignment, textPaint));
         System.out.println("Print status Stat**" + mPrinter.getPrinterStatus());
     }
@@ -573,6 +608,13 @@ public class quickSalesRepActivity extends AppCompatActivity implements DatePick
         DebugLog.logTrace("onDestroy");
         mPrinter.onActivityDestroy();
         super.onDestroy();
+    }
+
+    private String readSharedPref(String KEY) {
+        String returnData = null;
+        String SHAREDPREFNAME = "LittlePOSPrefs";
+        SharedPreferences settings = getSharedPreferences(SHAREDPREFNAME, 0);
+        return settings.getString("STARTMONTH", 0 + "");
     }
 
 }

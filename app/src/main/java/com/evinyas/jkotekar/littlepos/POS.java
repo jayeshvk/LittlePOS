@@ -449,7 +449,7 @@ public class POS extends AppCompatActivity implements DatePickerFragment.OnDataP
         if (!stat) {
             FragmentManager fm = getSupportFragmentManager();
             quickSalesReportFragment frag = (quickSalesReportFragment) fm.findFragmentByTag("salesReport");
-            frag.pass(date);
+            //frag.pass(date);
         }
     }
 

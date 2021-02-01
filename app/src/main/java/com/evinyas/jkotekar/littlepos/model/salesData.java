@@ -27,8 +27,6 @@ public class salesData {
 
     private String comments;
 
-
-
     public salesData() {
 
     }

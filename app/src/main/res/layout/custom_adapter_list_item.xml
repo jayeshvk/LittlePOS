@@ -23,7 +23,8 @@
             android:layout_weight="0.9"
             android:text="Date"
             android:id="@+id/liDate"
-            android:textSize="12sp"/>
+            android:textSize="12sp"
+            android:gravity="start"/>
 
         <TextView
             style="@style/ReportText"
@@ -31,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1.70"
             android:text="Product"
-            android:gravity="end"
+            android:gravity="start"
             android:id="@+id/liProduct"
             android:textSize="12sp"/>
 
@@ -41,6 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
             android:text="Qty"
+            android:gravity="end"
             android:id="@+id/liQty"
             android:textSize="12sp"/>
 

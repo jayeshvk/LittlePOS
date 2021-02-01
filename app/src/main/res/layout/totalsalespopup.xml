@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#26262A"
-    android:orientation="vertical"
-    android:padding="5dp">
+    android:orientation="vertical">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -36,7 +35,7 @@
                     android:layout_weight="1"
                     android:gravity="end"
                     android:paddingRight="3dp"
-                    android:text="Total Sales"
+                    android:text=" Sales"
                     android:textColor="@color/Black"
                     android:textSize="14sp" />
 
@@ -47,17 +46,24 @@
                     android:layout_weight="1"
                     android:gravity="end"
                     android:paddingRight="3dp"
-                    android:text="Toal Payments"
+                    android:text="Payments"
                     android:textColor="@color/Black"
                     android:textSize="14sp" />
 
                 <TextView
-                    android:id="@+id/rcsiDue"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="end"
-                    android:text="Toal Dues"
+                    android:text="Dues"
+                    android:textColor="@color/Black"
+                    android:textSize="14sp" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.75"
+                    android:gravity="end"
+                    android:text="Cost"
                     android:textColor="@color/Black"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -66,37 +72,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:background="@drawable/shadow" />
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:background="@color/White"
-                android:orientation="horizontal"
-                android:paddingTop="2dp" />
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Total Cost"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="#FFFFFF" />
-
-                <TextView
-                    android:id="@+id/popupTotalCost"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layout_weight="1"
-                    android:text="00.00"
-                    android:textAlignment="textEnd"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="#FFFFFF" />
-            </LinearLayout>
         </LinearLayout>
 
     </ScrollView>

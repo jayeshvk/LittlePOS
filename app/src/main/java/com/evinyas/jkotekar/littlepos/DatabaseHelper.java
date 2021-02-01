@@ -1388,7 +1388,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return data;
     }
 
-    List<Double> getSalesByYear(String year, int cusId) {
+
+    List<Double> getSalesByYear(String fyear, String tyear, String fmonth,String tmonth, String enddate, int cusId) {
         List<Double> data = new ArrayList<>();
         String SALESDATA_SUM_SALES_YEAR = "";
 
@@ -1400,8 +1401,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     KEY_SALES_RECEIVED,
                     TABLE_SALES,
                     KEY_SALES_DATE,
-                    year + "-01-01",
-                    year + "-12-31",
+                    fyear + "-" + fmonth + "-01",
+                    tyear + "-" + tmonth + "-" + enddate,
                     KEY_SALES_CUSTID,
                     cusId
             );
@@ -1414,12 +1415,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     KEY_SALES_RECEIVED,
                     TABLE_SALES,
                     KEY_SALES_DATE,
-                    year + "-01-01",
-                    year + "-12-31");
+                    fyear + "-" + fmonth + "-01",
+                    tyear + "-" + tmonth + "-" + enddate);
         }
 
         // "getReadableDatabase()" and "getWriteableDatabase()" return the same object (except under low
         // disk space scenarios)
+        System.out.println(SALESDATA_SUM_SALES_YEAR);
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery(SALESDATA_SUM_SALES_YEAR, null);
         try {

@@ -2,6 +2,7 @@ package com.evinyas.jkotekar.littlepos;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -23,6 +24,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.multidex.MultiDex;
 
+import com.evinyas.jkotekar.littlepos.model.UHelper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         TextView tvUSer = findViewById(R.id.user);
         tvUSer.setText(user.getEmail());
 
-        if (readSharedPref(USERNAME).length()==0)
+        if (readSharedPref(USERNAME).length() == 0)
             showHelp();
 
         //for mashmello check if storgae permisiion exist and ask if not exist
@@ -81,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
             System.out.println("Reset boolean parse" + e);
         }
 
-
     }
 
     @Override
@@ -89,9 +90,7 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         MenuItem item = menu.findItem(R.id.action_autobackup_check);
-        if (readSharedPref(AUTOBACKUP).contains("true"))
-            item.setChecked(true);
-        else item.setChecked(false);
+        item.setChecked(readSharedPref(AUTOBACKUP).contains("true"));
         return true;
     }
 
@@ -108,8 +107,14 @@ public class MainActivity extends AppCompatActivity {
                     writetoSharedPref(AUTOBACKUP, "true");
                 else writetoSharedPref(AUTOBACKUP, "false");
                 return true;
+            case R.id.financial_period:
+                setFinancialPeriod();
+                return true;
             case R.id.action_user_name:
                 Toast.makeText(getApplicationContext(), "User Name " + readSharedPref(USERNAME), Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.action_logout:
+                logout();
                 return true;
             case R.id.instructions:
                 showHelp();
@@ -128,6 +133,20 @@ public class MainActivity extends AppCompatActivity {
             default:
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setFinancialPeriod() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Set Start Period")
+                .setSingleChoiceItems(R.array.months, UHelper.parseInt(readSharedPref("STARTMONTH")), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int which) {
+                        writetoSharedPref("STARTMONTH", which + "");
+                    }
+                });
+
+        builder.create().show();
     }
 
     public void sales(View view) {
@@ -207,17 +226,15 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences settings = getSharedPreferences(SHAREDPREFNAME, 0);
         switch (KEY) {
             case USERNAME:
-                returnData = settings.getString(USERNAME, "");
-                return returnData;
+                return settings.getString(USERNAME, "");
             case AUTOBACKUP:
-                returnData = settings.getString(AUTOBACKUP, "none");
-                return returnData;
+                return settings.getString(AUTOBACKUP, "none");
             case "DBRESET":
-                returnData = settings.getString("DBRESET", "true");
-                return returnData;
+                return settings.getString("DBRESET", "true");
+            case "STARTMONTH":
+                return settings.getString("STARTMONTH", 0 + "");
             default:
-                returnData = settings.getString(KEY, null);
-                return returnData;
+                return settings.getString(KEY, null);
         }
     }
 
@@ -329,7 +346,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void logout(View view) {
+    private void logout() {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         mAuth.signOut();
         writetoSharedPref(USERNAME, "");
