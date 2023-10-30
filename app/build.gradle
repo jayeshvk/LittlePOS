@@ -1,16 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 34
 
     defaultConfig {
         applicationId "com.evinyas.jkotekar.littlepos"
         vectorDrawables.useSupportLibrary = true
         minSdkVersion 21
-        targetSdkVersion 29
-        versionCode 121010700
-        versionName "1.7.0"
-        multiDexEnabled true
+        targetSdkVersion 34
+        versionCode 121010701
+        versionName "1.7.1"
     }
     buildTypes {
         release {
@@ -21,26 +20,27 @@ android {
     dexOptions {
         javaMaxHeapSize "2g"
     }
+    namespace 'com.evinyas.jkotekar.littlepos'
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation files('src/main/assets/commons-net-3.5.jar')
     implementation files('src/main/assets/poi-3.14-20160307.jar')
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'com.github.angads25:filepicker:1.0.2'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.github.angads25:filepicker:1.1.1'
     implementation 'com.google.android.gms:play-services-drive:17.0.0'
-    implementation 'com.google.firebase:firebase-database:19.6.0'
+    implementation 'com.google.firebase:firebase-database:20.3.0'
     implementation 'com.android.support.constraint:constraint-layout:2.0.4'
     implementation 'com.android.support:multidex:1.0.3'
-    implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
-    implementation 'com.google.android.material:material:1.2.1'
-    implementation 'com.google.firebase:firebase-storage:19.2.1'
-    implementation 'com.google.firebase:firebase-auth:20.0.2'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
+    implementation 'com.google.android.material:material:1.10.0'
+    implementation 'com.google.firebase:firebase-storage:20.3.0'
+    implementation 'com.google.firebase:firebase-auth:22.2.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     testImplementation 'junit:junit:4.12'
-    implementation 'com.google.firebase:firebase-core:18.0.2'
-    implementation files('libs/cie-bluetooth-printer-sdk-v2.1.6.jar')
+    implementation 'com.google.firebase:firebase-core:21.1.1'
+    implementation files('src/main/assets/cie-bluetooth-printer-sdk-v2.2.8.jar')
 
     apply plugin: 'com.google.gms.google-services'
 }

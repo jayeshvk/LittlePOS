@@ -48,6 +48,11 @@ public class POS extends AppCompatActivity implements DatePickerFragment.OnDataP
     private static final int PRICE = 1;
     private static final int QUANTITY = 2;
     private static final int AMOUNT = 3;
+    Button salesReportButton;
+    Button extras;
+    Spinner spinner;
+    double netPrice = 0, sum = 0;
+    String comment = "";
     private List<CustomerProduct> CPList = null;
     private TextView date;
     private TextView gross;
@@ -59,14 +64,7 @@ public class POS extends AppCompatActivity implements DatePickerFragment.OnDataP
     private String selectedCustomer = null;
     private Integer cusID = -1;
     private DatabaseHelper databaseHelper;
-    Button salesReportButton;
-    Button extras;
-    Spinner spinner;
-
     private double payments, surcharge, discount;
-    double netPrice = 0, sum = 0;
-    String comment = "";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

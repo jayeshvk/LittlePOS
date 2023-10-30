@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Gradle: C (2)">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/src/main/assets/cie-bluetooth-printer-sdk-v2.2.8.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

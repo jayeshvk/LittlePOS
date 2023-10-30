@@ -312,7 +312,7 @@ public class quickSalesRepActivity extends AppCompatActivity implements DatePick
         int fromYear = Integer.parseInt(first);
         System.out.println(fromYear + "*" + toYear);
 
-        for (int i = fromYear; i <= toYear; i++) {
+        for (int i = fromYear; i <= toYear+1; i++) {
             HashMap<String, String> tmp = new HashMap<>();
             Calendar cal = Calendar.getInstance();
             int m = UHelper.parseInt(readSharedPref("STARTMONTH"));
@@ -325,19 +325,19 @@ public class quickSalesRepActivity extends AppCompatActivity implements DatePick
 
             List<Double> salesByYear = databaseHelper.getSalesByYear(fy, ty, fm, tm, cal.getActualMaximum(Calendar.DATE) + "", cusID);
             List<String> cdata = databaseHelper.getCostSumbyDate(fy + "-" + m + "-" + "01", ty + "-" + tm + "-" + "01");
-
+            double due = 0;
             String yrs = fy.substring(2, 4) + "-" + ty.substring(2, 4);
             if (salesByYear.get(0) != null || salesByYear.get(1) != null) {
+                due = salesByYear.get(0) - (salesByYear.get(1)+ Math.round(Math.abs(due)));
                 System.out.println(yrs + "=" + "Sales " + salesByYear.get(0) + "Received" + salesByYear.get(1) + "\n");
                 tmp.put(YEARS, yrs);
                 NumberFormat formatter = NumberFormat.getIntegerInstance(new Locale("en", "IN"));
                 tmp.put(SALES, formatter.format(salesByYear.get(0)));
                 tmp.put(PAYMENTTOTAL, formatter.format(salesByYear.get(1)));
-                tmp.put(DUE, formatter.format(salesByYear.get(0) - salesByYear.get(1)));
+                tmp.put(DUE, formatter.format(due));
                 if (cdata.get(0) == null)
                     cdata.set(0, "0");
                 tmp.put(COST, formatter.format(UHelper.parseDouble(cdata.get(0))));
-
                 feedList.add(tmp);
             }
         }
