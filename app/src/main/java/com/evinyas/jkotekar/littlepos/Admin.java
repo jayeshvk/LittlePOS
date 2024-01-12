@@ -24,7 +24,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -76,7 +82,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class Admin extends Activity {
+public class Admin extends AppCompatActivity {
 
     private String userName;
     private ProgressDialog pDialog;
@@ -95,7 +101,6 @@ public class Admin extends Activity {
     StorageReference mStorageReference;
     FirebaseAuth mAuth;
     FirebaseUser user;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,6 +108,7 @@ public class Admin extends Activity {
         databaseHelper = DatabaseHelper.getInstance(this);
         setContentView(R.layout.admin);
         userName = getsharedPref("username");
+
 
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
@@ -122,7 +128,24 @@ public class Admin extends Activity {
         }
     }
 
+    ActivityResultLauncher<Intent> launcher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        // Here, no request code
+                        Intent data = result.getData();
+                        //doSomeOperations();
+                    }
+                }
+            });
     public void copyDBtoSD(View view) {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("text/plain");
+        launcher.launch(intent);
+
         File sd = Environment.getExternalStorageDirectory().getAbsoluteFile();
         FileChannel source;
         FileChannel destination;
@@ -165,7 +188,14 @@ public class Admin extends Activity {
         }
     }
 
+
+
+
     public void restoreDBfromSD(View view) {
+
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+        launcher.launch(intent);
+
         DialogProperties properties = new DialogProperties();
         properties.selection_mode = DialogConfigs.SINGLE_MODE;
         properties.selection_type = DialogConfigs.FILE_SELECT;
@@ -463,7 +493,7 @@ public class Admin extends Activity {
     }
 
     private void restoreFromByte(String filename) {
-        if (ContextCompat.checkSelfPermission(Admin.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+       // if (ContextCompat.checkSelfPermission(Admin.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
             firebaseStorage = FirebaseStorage.getInstance();
             firebaseDatabase = FirebaseDatabase.getInstance();
 
@@ -497,10 +527,10 @@ public class Admin extends Activity {
             });
 
 
-        } else
-            ActivityCompat.requestPermissions(Admin.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9);
+        } //else
+            //ActivityCompat.requestPermissions(Admin.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 9);
 
-    }
+    //}
 
     public void selectiveRestore(View view) {
         final List<BackupFile> data = new ArrayList<>();

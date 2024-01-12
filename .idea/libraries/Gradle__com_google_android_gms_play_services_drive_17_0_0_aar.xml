@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="Gradle: com.google.android.gms:play-services-drive:17.0.0@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/58650b67e02042742883a2dca54f2682/transformed/jetified-play-services-drive-17.0.0/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/58650b67e02042742883a2dca54f2682/transformed/jetified-play-services-drive-17.0.0/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/0a90eee47bfa90fae421a3f484a49887/transformed/jetified-play-services-drive-17.0.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/0a90eee47bfa90fae421a3f484a49887/transformed/jetified-play-services-drive-17.0.0/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.android.gms/play-services-drive/17.0.0/9e164fe3577c17e68bb03d156a6161b697922ad9/play-services-drive-17.0.0-javadoc.jar!/" />

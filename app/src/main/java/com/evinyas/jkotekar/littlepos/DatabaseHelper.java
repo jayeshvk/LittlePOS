@@ -1,5 +1,6 @@
 package com.evinyas.jkotekar.littlepos;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.ContentValues;
 import android.content.Context;
@@ -1389,7 +1390,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    List<Double> getSalesByYear(String fyear, String tyear, String fmonth,String tmonth, String enddate, int cusId) {
+    @SuppressLint("Range")
+    List<Double> getSalesByYear(String fyear, String tyear, String fmonth, String tmonth, String enddate, int cusId) {
         List<Double> data = new ArrayList<>();
         String SALESDATA_SUM_SALES_YEAR = "";
 
@@ -1401,8 +1403,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     KEY_SALES_RECEIVED,
                     TABLE_SALES,
                     KEY_SALES_DATE,
-                    fyear + "-" + fmonth + "-01",
-                    tyear + "-" + tmonth + "-" + enddate,
+                    fyear + "-" + fmonth + "-01"+" 00:00:00",
+                    tyear + "-" + tmonth + "-" + enddate+" 23:59:59",
                     KEY_SALES_CUSTID,
                     cusId
             );
@@ -1418,10 +1420,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     fyear + "-" + fmonth + "-01",
                     tyear + "-" + tmonth + "-" + enddate);
         }
-
+        System.out.println(SALESDATA_SUM_SALES_YEAR);
         // "getReadableDatabase()" and "getWriteableDatabase()" return the same object (except under low
         // disk space scenarios)
-        System.out.println(SALESDATA_SUM_SALES_YEAR);
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery(SALESDATA_SUM_SALES_YEAR, null);
         try {

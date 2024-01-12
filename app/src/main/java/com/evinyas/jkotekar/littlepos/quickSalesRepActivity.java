@@ -176,7 +176,7 @@ public class quickSalesRepActivity extends AppCompatActivity implements DatePick
                 UHelper.dateFormatdmyTOymd(toDate.getText().toString()));
         gross.setText(String.format("%s", UHelper.parseDouble(data.get(0))));
         payments.setText(String.format("%s", UHelper.parseDouble(data.get(1))));
-        net.setText(String.format("%s", UHelper.parseDouble(data.get(0)) - UHelper.parseDouble(data.get(1))));
+        net.setText(String.format("%.2f", UHelper.parseDouble(data.get(0)) - UHelper.parseDouble(data.get(1))));
 
         List<String> sumDay = databaseHelper.getSalessumfortheDay(cusID, UHelper.setPresentDateyyyyMMddCP());
         sum = UHelper.parseDouble(sumDay.get(0));
@@ -304,14 +304,11 @@ public class quickSalesRepActivity extends AppCompatActivity implements DatePick
     public void salesPopUp() {
         ArrayList<HashMap<String, String>> feedList = new ArrayList<>();
 
-        //List<String> data = databaseHelper.getSalesSumbyCustomer(cusID, "", "");
-        //start of new fucntionality to get total business per customer per year
-
         String first = databaseHelper.getFirstEntry().substring(0, 4);
         int toYear = Calendar.getInstance().get(Calendar.YEAR);
         int fromYear = Integer.parseInt(first);
         System.out.println(fromYear + "*" + toYear);
-
+        double due = 0;
         for (int i = fromYear; i <= toYear+1; i++) {
             HashMap<String, String> tmp = new HashMap<>();
             Calendar cal = Calendar.getInstance();
@@ -325,11 +322,10 @@ public class quickSalesRepActivity extends AppCompatActivity implements DatePick
 
             List<Double> salesByYear = databaseHelper.getSalesByYear(fy, ty, fm, tm, cal.getActualMaximum(Calendar.DATE) + "", cusID);
             List<String> cdata = databaseHelper.getCostSumbyDate(fy + "-" + m + "-" + "01", ty + "-" + tm + "-" + "01");
-            double due = 0;
             String yrs = fy.substring(2, 4) + "-" + ty.substring(2, 4);
             if (salesByYear.get(0) != null || salesByYear.get(1) != null) {
-                due = salesByYear.get(0) - (salesByYear.get(1)+ Math.round(Math.abs(due)));
-                System.out.println(yrs + "=" + "Sales " + salesByYear.get(0) + "Received" + salesByYear.get(1) + "\n");
+                due = due + ( salesByYear.get(0) - (salesByYear.get(1)));//+ Math.round(Math.abs(due)));
+                System.out.println(yrs + "=" + "Sales " + salesByYear.get(0) + "Received " + salesByYear.get(1) + "Due "+due) ;
                 tmp.put(YEARS, yrs);
                 NumberFormat formatter = NumberFormat.getIntegerInstance(new Locale("en", "IN"));
                 tmp.put(SALES, formatter.format(salesByYear.get(0)));
